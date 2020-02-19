@@ -1,3 +1,6 @@
+/*
+ *  필요한 데이터가 무엇이 있는가, 어떤 계산이 필요한가에 대해서 계속 생각
+ */
 package com.bit.demo;
 
 import java.util.Scanner; 
