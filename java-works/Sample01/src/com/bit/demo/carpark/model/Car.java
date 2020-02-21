@@ -20,8 +20,8 @@ public class Car {
 		return this.no;
 	}
 
-	public void setNo(String carNo) {
-		this.no = carNo;
+	public void setNo(String carno) {
+		this.no = carno;
 		
 	}
 	//애노테이션(옵션)

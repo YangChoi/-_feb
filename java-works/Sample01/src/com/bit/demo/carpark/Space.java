@@ -25,12 +25,18 @@ public class Space {
 		}
 		return carList[i];
 	}
-	
+	/**
+	 * 배열의 요소는 Car(참조형)이다. 
+	 * @param no
+	 * @return
+	 */
 	//인텍스를 꺼내줘 (No 전달)
 	//배열이니까 요소번호 찾는 것을 먼저 만들자 
 	public int indexOfNo(String no) {
 		for(int i = 0; i<carList.length; ++i) {
-				if(carList[i].getNo().equals(no)) { //i번 car를 가져와서 그 안에 차 번호를 가져온다.그리고 차번호 비교(채이닝)
+				if(carList[i] != null && 
+						carList[i].getNo().equals(no)) { //i번 car를 가져와서 그 안에 차 번호를 가져온다.그리고 차번호 비교(채이닝)
+					//문제 : carList에 null이 있는지 없는지 확인안함 (추가 : carList[i] != null && )
 					//배열형,배열 안의 하나하나가 car형, car형 안에 string 타입, string타입 안의 메서드 (equals)
 					return i;
 				}
@@ -55,19 +61,27 @@ public class Space {
 		return -1; //실행이 여기까지 온다는 것 : 만차 (데이터를 계속 추가해 가는 과정이기 때문에 넘치면 안되는 배열 특성상 에러 표시를 해놔야함)
 		//배열 요소 번호는 음수가 없기 때문에 음수로 표시해놓음 
 	}
-	public void save(Car car) { //차 추가
-		//주차장에 차가 들어왔다 
-		//요소가 주차 자리의 번호가 된다. 
+	public boolean save(Car car) { //차 추가
+		//주차장에 차가 들어왔다 ... 추가. {삽입}
+		//요소가 주차 자리의 번호가 된다.
 
+		boolean state = false; //state를 return 시킴  (초기값 안주면 if가 항상 실행되는게 아니기 때문에 그런경우 return할 값이 없기 때문에 에러 뜸) 
 		int idx = isEmpty();//비어 있는 자리를 찾아야한다. 그에 따른 메서드를 만든다 
-		if(idx >= 0) { 
-			carList[idx] = car; 
+		if(idx > -1) { //배열에게 음수가 나온 다는 것은 있을 수가 없다(자리가 없음) //-1이 아닌 >size로 해도 됨    
+			carList[idx] = car; //주차장에 차 넣음
+			state = true; // 주차장에 차 넣으면 true
 		}
+		return state;  //변수로 처리한 다음에 return은 웬만하면 하나만 (최대 2개정도..)
 	}
-	
+	/*함수 실행의 결과 , 목적이 같음 (두 clean)*/
 	//비우는 처리 
 	public void clean(int idx) { //차 나감
 		//주차장에 차가 나갔다
+		carList[idx] = null; //차가 없다 : null //요소가 없어졌다 >> 아니다. 메모리 상의 공간은 그대로 있고 값이 없다는 것.  	
+	}
+	public void clean(String no) { //위의 clean과 같지만 매개변수가 다른경우 : 오버로딩 
+		//주차장에 차가 나갔다
+		int idx = indexOfNo(no);
 		carList[idx] = null; //차가 없다 : null 
 		
 	}

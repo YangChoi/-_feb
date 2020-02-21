@@ -43,8 +43,7 @@ public class BootApp {
 		//초기화
 //		ServiceDemo service = new ServiceDemo(10, "car park"); //생성자를 여러개 만들고 싶으면 기본 생성자를 반드시 입력해야한다. 
 //		System.out.println(service.toString()); 
-		ParkService service = new ParkService(); 
-	
+		ParkService service = new ParkService(); //주차장이 하나 생김
 		Scanner input = new Scanner(System.in);
 		
 	
@@ -56,28 +55,30 @@ public class BootApp {
 				System.out.println("종료");
 				break;
 			}
+			//차 나갈 때 
 			if(menu.equals("2")) { // 차 확인 후 요금 정산 
 				System.out.println("요금 정산 : 차 나감 ");
 				// 검색 필요 ( 요금 정산을 받은 차가 무엇인지 알아야한다 ) 
 				System.out.println("차량 번호 : "  ); 
-				String carNo = input.nextLine(); //차량 번호 받기  //차가 나간 후에 차 자리를 비우려고 하려면 차의 위치를 또한 받아야한다 (배열의 요소번호처럼) 
+				String carno = input.nextLine(); //차량 번호 받기  //차가 나간 후에 차 자리를 비우려고 하려면 차의 위치를 또한 받아야한다 (배열의 요소번호처럼) 
 				
 				// 검색 - inTime (입력받은 차 번호를 ParkService로 가져간다)
-				Car car = service.getCar(carNo); //차에 대한 정보를 가져와서 car에다 넣는다  (service라는 클래스 안에 getCar)
-				if(car == null) {
+				Car car = service.getCar(carno); //차에 대한 정보를 가져와서 car에다 넣는다  (service라는 클래스 안에 getCar)
+				//식별값 (유니크한 값) : 차량번호 >>필드하나 만들어서 식별용으로 뺌 (이 필드가 왜 필요한지 잘 생각) 
+				if(car == null) { //검색기능을 만들 때는 반드시 있다없다 를 찾아야한다(null인지 아닌지) ||없다에 대해선 생각할 건 없다. 있다에 대해서는 하나여야하는 상황인지 아닌지를 또 생각 
 					System.out.println("등록된 차량이 아님");
-				}
-				
+				}else { //위의 if가 참, 거짓 상관없이 아래의 코드가 실행되기 때문에 else를 붙인다(null이 참일 경우에도 아래의 코드가 실행되면 안되기 때문) 
+	
 //				int inTime = 0130; //24시간제 (새벽 1시에 들어온 차 ) //그냥 화면에 찍어보려고 임의로 해놓은 것 
 //				int inTime = car.getIntime(); //Car안에 보면 들어올 때 저장했던 정보가 있다.. //???????
-				System.out.println("나간 시간 : "); //car정보에 들어온 시간은 있겟지만, 나가는 시간은 없을 것 따라서 그대로 둠 
+				System.out.println("나간 시간 : "); //car정보에 들어온 시간은 있겠지만, 나가는 시간은 없을 것 따라서 그대로 둠 
 				int outTime = Integer.parseInt(input.nextLine());
 				car.setOuttime(outTime); //나간 시간 저장 //getter setter 이름 뒤에는 필드 이름이므로 이런 필드가 있구나! 하고 알아야함 
-				/*Car는 정보만 가지고 있고 계산은 service가 한다 */
+				/*Car는 정보만 가지고 있고 계산은 service가 한다(위임)*/
+				/*요금계산*/
 				System.out.println("요금 : " );
 				//시간 계산 
-				
-				double price = service.getPrice(car); //(inTime, outTime)이라고 해도 되지만 우리는 car를 전달해본다 .
+				double price = service.getPrice(car); //(inTime, outTime)이라고 해도 되지만 car를 전달해본다 .
 //				int diff = outTime - inTime;
 //				//요금 계산 (금액 계산은 double 타입)
 //				double price = 5000; // 돈 계산은 여기서 하지 않고 service에게 시킨다 
@@ -85,28 +86,32 @@ public class BootApp {
 				System.out.println(price);
 				
 				//차가 들어와서 저장했던 기록 - 비우기 (차가 나감)
-				System.out.println("차 나갔으니까 청소하기 ");
+				System.out.println("차 나갔으니까 청소하기 "); //BootApp에서 배열에 바로 갈 수 없기 때문에 Space클래스 안에 있는 배열 안에 null이라는 값 저장하기 
+				//근데 BootApp에서는 Space 클래스 갈 수 없기 때문에 ParkService를 거친다 
+				
+				/*나가는 처리 */
+				service.outCome(car); //main이 알고있는 차 정보 : car 뿐(정보덩어리-차번호, 들어오고 나간시간 , 어디에 있었는지는 모름 )
+				}
 			}
 			if(menu.equals("1")) { //정보 저장 
 				Car car = new Car(); //차가 하나 새로 생긴다 
 				System.out.println("시간 기록 : 차 들어옴");
 				System.out.println("차량 번호 : "  ); 
-				String carNo = input.nextLine(); //차량 번호 받기 //차량 번호는 문자열로 본다
-				
-				//todo : 차가 들어갔다는 표현이 없다 save/clean이 호출안됨 
-				
-				
+				String carno = input.nextLine(); //차량 번호 받기 //차량 번호는 문자열로 본다
+				car.setNo(carno); // 얘를 안하니까 받은 차량번호가 NULL이 되더라...
 				System.out.println("들어온 시간 : ");
 				// 사용자가 HHmm 숫자 입력한다는 전제 
 				int inTime = Integer.parseInt(input.nextLine()); //들어오는 시간 (Line으로 문자열을 받고 통째로 int로 parse시킴(바꿈)) //nextInt로 받아도 됨	
 				car.setIntime(inTime); 
 //				int outTime = 0; //나가는 시간 HHmm (네자리 정수로 받는다) // 지금 막 들어오는 중이니까 나가는 시간은 0으로 초기화 시켜놓음 
-				String s = ""; //입력받은 정보들(문자열들)을 싹 다 붙여 긴 문자열을 만든다  
+//				String s = ""; //입력받은 정보들(문자열들)을 싹 다 붙여 긴 문자열을 만든다  
 //				//car의 필드들을 출력하는 것과 같으므로 잘라내서 car클래스로 
-//				s += carNo + " : ";
+//				s += carno + " : ";
 //				s += inTime + "-";
 //				s += outTime;
 				System.out.println(car); //이 작업을 해주는 lib가 또 있다 // toString()
+				service.comeIn(car); //주차해라 
+				
 			}
 		}//실제 실행 내용 while loop 
 		
